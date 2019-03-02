@@ -17,7 +17,9 @@
                       <p>{{book.volumeInfo.authors.join(",")}}</p>
                     </div>
                     <div class="book-publisher">
-                      <p>{{book.volumeInfo.publisher}}</p>
+                      <p>
+                        <i>{{book.volumeInfo.publisher}}</i>
+                      </p>
                     </div>
                   </div>
                 </v-card-title>
