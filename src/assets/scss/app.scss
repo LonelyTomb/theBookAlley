@@ -1,0 +1,29 @@
+// $default: #112F41; // deep blue
+// $secondary: #ED553B; //deep red
+// $info: #0894A1; // light blue
+// $warning: #F2B134; // light yellow
+// $primary: #47AB6C; // light green
+@import url('https://fonts.googleapis.com/css?family=Oswald:700|Titillium+Web');
+$oswald: 'Oswald',
+sans-serif;
+$titillium: 'Titillium Web',
+sans-serif;
+body {
+    margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font: {
+        family: $oswald;
+    }
+}
+
+p {
+    font: {
+        family: $titillium;
+    }
+}
