@@ -17,15 +17,17 @@
         <Book v-for="book in books" :key="book.id" :book="book"></Book>
       </v-layout>
     </v-container>
-    <v-layout v-else row justify-center>
-      <v-flex>
-        <v-card>
-          <v-card-title>
-            <h3 class="headline">No Books Found</h3>
-          </v-card-title>
-        </v-card>
-      </v-flex>
-    </v-layout>
+    <v-container v-else fluid>
+      <v-layout row justify-center wrap align-center>
+        <v-flex>
+          <v-card>
+            <v-card-title>
+              <h3 class>No Books Found</h3>
+            </v-card-title>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
   </v-container>
 </template>
 
