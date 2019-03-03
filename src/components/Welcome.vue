@@ -1,5 +1,7 @@
 <template>
   <v-container fluid>
+    <SnackBar :text="message"/>
+
     <v-layout row justify-center>
       <v-flex>
         <v-form>
@@ -44,22 +46,32 @@ export default {
   name: "Welcome",
   components: {
     Loader: () => import("./Loader.vue"),
+    SnackBar: () => import("./Snackbar.vue"),
     Book: () => ({
       component: import("./Book"),
       loading: Spinner
     })
   },
   data: () => ({
+    message: "",
     bookName: "",
-    books: []
+    books: [],
+    toggleSB: true
   }),
   mounted() {},
   methods: {
-    loadL() {
-      $store.commit("toggleLoader");
-    },
     async findBook(bookName) {
+      if (bookName == null || bookName.length == 0) {
+        this.message = "Enter Book";
+        this.$store.commit("toggleSnackBar");
+        return;
+      }
+      this.$store.commit({
+        type: "toggleBooksState",
+        condition: loading
+      });
       this.$store.commit("toggleLoader");
+
       try {
         const bookData = await axios.get(
           "https://www.googleapis.com/books/v1/volumes",
@@ -75,7 +87,14 @@ export default {
           data: { items },
           status
         } = bookData;
+
+        this.$store.commit({
+          type: "toggleBooksState",
+          condition: loading
+        });
+
         this.$store.commit("toggleLoader");
+
         this.books = items;
         // console.log(items, status);
       } catch (e) {
