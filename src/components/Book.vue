@@ -1,6 +1,6 @@
 <template>
   <v-flex md4>
-    <v-card color="purple" class="white--text" height="100%">
+    <v-card color="indigo darken-3" class="white--text" height="100%">
       <v-container fluid fill-height>
         <v-layout column justify-space-between fill-height class="colcl">
           <v-flex class="col1" grow>
@@ -27,7 +27,7 @@
               <v-flex xs5 grow>
                 <v-layout column fluid justify-space-around fill-height>
                   <v-flex>
-                    <v-img :src="book.volumeInfo.imageLinks.thumbnail" contain></v-img>
+                    <v-img :src="book.volumeInfo.imageLinks.thumbnail || placeholder" contain></v-img>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -35,7 +35,17 @@
           </v-flex>
           <v-flex class="col2">
             <v-divider light></v-divider>
-            <v-card-actions class="pa-3">actions
+            <v-card-actions class="pa-3">
+              <v-btn
+                flat
+                :href="book.volumeInfo.infoLink"
+                target="_blank"
+                small
+                class="white--text"
+              >
+                <span class="mr-2">View</span>
+                <v-icon>open_in_new</v-icon>
+              </v-btn>
               <v-spacer></v-spacer>
               <v-icon>save</v-icon>
             </v-card-actions>
@@ -53,7 +63,10 @@ export default {
     book: {
       type: Object
     }
-  }
+  },
+  data: () => ({
+    placeholder: "./../assets/placeholder.svg"
+  })
 };
 </script>
 

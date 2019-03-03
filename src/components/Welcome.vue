@@ -1,7 +1,6 @@
 <template>
   <v-container fluid>
     <SnackBar :text="message"/>
-
     <v-layout row justify-center>
       <v-flex>
         <v-form>
@@ -9,7 +8,11 @@
             <v-flex md6>
               <v-text-field label="search" clearable solo single-line v-model="bookName"></v-text-field>
             </v-flex>
-            <v-btn color="success" @click.prevent="findBook(bookName)">Find</v-btn>
+            <v-btn
+              color="purple darken-2"
+              @click.prevent="findBook(bookName)"
+              class="text-capitalize"
+            >Find</v-btn>
           </v-layout>
         </v-form>
       </v-flex>
@@ -68,7 +71,7 @@ export default {
       }
       this.$store.commit({
         type: "toggleBooksState",
-        condition: loading
+        condition: "loading"
       });
       this.$store.commit("toggleLoader");
 
@@ -78,11 +81,19 @@ export default {
           {
             params: {
               q: bookName,
+              maxResults: 40,
               key: api
             }
           }
         );
 
+        if (bookData.data.totalItems == 0) {
+          this.books = [];
+          this.message = "No Books Found";
+          this.$store.commit("toggleSnackBar");
+          this.$store.commit("toggleLoader");
+          return;
+        }
         const {
           data: { items },
           status
@@ -90,7 +101,7 @@ export default {
 
         this.$store.commit({
           type: "toggleBooksState",
-          condition: loading
+          condition: "loading"
         });
 
         this.$store.commit("toggleLoader");
@@ -99,6 +110,8 @@ export default {
         // console.log(items, status);
       } catch (e) {
         this.$store.commit("toggleLoader");
+        this.message = "Unable to Complete, Try Again";
+        this.$store.commit("toggleSnackBar");
       }
     }
   }
