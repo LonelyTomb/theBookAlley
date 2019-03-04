@@ -50,8 +50,11 @@
                 <v-icon>open_in_new</v-icon>
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn small @click="saveBook(book)" flat>
+              <v-btn small @click="saveBook(book)" flat v-if="findBook == false">
                 <v-icon>save</v-icon>
+              </v-btn>
+              <v-btn small @click="remove(book)" flat v-else>
+                <v-icon>delete</v-icon>
               </v-btn>
             </v-card-actions>
           </v-flex>
@@ -70,7 +73,8 @@ export default {
     }
   },
   components: {
-    SnackBar: () => import("./Snackbar.vue")
+    SnackBar: () => import("./Snackbar.vue"),
+    Loader: () => import("./Loader.vue")
   },
   data: () => ({
     placeholder: "./../assets/placeholder.svg",
@@ -95,6 +99,25 @@ export default {
         this.$store.commit("toggleSnackBar");
       } catch (err) {
         console.log(err);
+      }
+    },
+    async findBook(book) {
+      try {
+        const getBook = await this.pouch("bookmarks").get(book.id);
+        if (getBook !== null) {
+          return true;
+        }
+      } catch (err) {}
+      return false;
+    },
+    async removeBook(book) {
+      try {
+        const getBook = await this.pouch("bookmarks").get(book.id);
+        if (getBook !== null) {
+          await this.pouch("bookmarks").remove(getBook);
+        }
+      } catch (e) {
+        console.log(e);
       }
     }
   }
