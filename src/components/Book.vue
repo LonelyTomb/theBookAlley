@@ -14,7 +14,7 @@
                     <v-divider light></v-divider>
                     <v-spacer></v-spacer>
                     <div class="book-author">
-                      <p>{{book.volumeInfo.authors.join(",")}}</p>
+                      <p>{{book.volumeInfo.authors.join(",") || "Not Found"}}</p>
                     </div>
                     <div class="book-publisher">
                       <p>
@@ -47,7 +47,9 @@
                 <v-icon>open_in_new</v-icon>
               </v-btn>
               <v-spacer></v-spacer>
-              <v-icon>save</v-icon>
+              <v-btn small @click="saveBook(book)" flat>
+                <v-icon>save</v-icon>
+              </v-btn>
             </v-card-actions>
           </v-flex>
         </v-layout>
@@ -66,7 +68,21 @@ export default {
   },
   data: () => ({
     placeholder: "./../assets/placeholder.svg"
-  })
+  }),
+  mounted() {},
+  methods: {
+    saveBook(book) {
+      this.$pouch
+        .put({
+          _id: book.id,
+          book
+        })
+        .then()
+        .catch(function(err) {
+          console.log(err);
+        });
+    }
+  }
 };
 </script>
 
