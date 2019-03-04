@@ -67,12 +67,18 @@ export default {
   }),
 
   mounted() {
-    this.$pouch.info().then(function(info) {
-      console.log(info);
-    });
+    this.pouch()
+      .info()
+      .then(function(info) {
+        console.log(info);
+      });
   },
   methods: {
     async findBook(bookName) {
+      this.$pouch("search").post({
+        name: bookName
+      });
+
       if (bookName == null || bookName.length == 0) {
         this.message = "Enter Book";
         this.$store.commit("toggleSnackBar");

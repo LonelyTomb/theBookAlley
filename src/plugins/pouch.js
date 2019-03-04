@@ -1,3 +1,8 @@
+import Vue from 'vue'
 import PouchDB from 'pouchdb-browser';
-var pouch = new PouchDB('theBookAlley');
-export default pouch;
+
+Vue.mixin({
+    methods: {
+        pouch: (dbName = "theBookAlley") => new PouchDB(dbName)
+    }
+})
