@@ -45,8 +45,12 @@
 <script>
 import { api } from "../apiKey";
 import Spinner from "./Spinner";
+
 export default {
   name: "Welcome",
+  pouch: {
+    bookmarks: {}
+  },
   components: {
     Loader: () => import("./Loader.vue"),
     SnackBar: () => import("./Snackbar.vue"),
@@ -61,7 +65,12 @@ export default {
     books: [],
     toggleSB: true
   }),
-  mounted() {},
+
+  mounted() {
+    this.$pouch.info().then(function(info) {
+      console.log(info);
+    });
+  },
   methods: {
     async findBook(bookName) {
       if (bookName == null || bookName.length == 0) {

@@ -1,6 +1,9 @@
 import Vue from 'vue'
+// import './plugins/vue-pouch'
 import './plugins/axios'
 import './plugins/vuetify'
+import pouch from "./plugins/pouch.js";
+
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -11,7 +14,7 @@ import './assets/js/app'
 import './assets/scss/app.scss'
 
 Vue.config.productionTip = false
-
+Vue.prototype.$pouch = pouch;
 new Vue({
     router,
     store,
