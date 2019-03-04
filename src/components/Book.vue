@@ -1,5 +1,8 @@
 <template>
   <v-flex md4>
+    <Loader :message="message"/>
+    <SnackBar :text="message"/>
+
     <v-card color="indigo darken-3" class="white--text" height="100%">
       <v-container fluid fill-height>
         <v-layout column justify-space-between fill-height class="colcl">
@@ -14,7 +17,7 @@
                     <v-divider light></v-divider>
                     <v-spacer></v-spacer>
                     <div class="book-author">
-                      <p>{{book.volumeInfo.authors.join(",") || "Not Found"}}</p>
+                      <p>{{book.volumeInfo.authors.join(",") || "Not Available"}}</p>
                     </div>
                     <div class="book-publisher">
                       <p>
@@ -66,21 +69,33 @@ export default {
       type: Object
     }
   },
+  components: {
+    SnackBar: () => import("./Snackbar.vue")
+  },
   data: () => ({
-    placeholder: "./../assets/placeholder.svg"
+    placeholder: "./../assets/placeholder.svg",
+    message: ""
   }),
   mounted() {},
   methods: {
-    saveBook(book) {
-      this.$pouch
-        .put({
+    async saveBook(book) {
+      this.message = "Adding Book";
+      this.$store.commit("toggleLoader");
+
+      try {
+        const getbook = await this.pouch("bookmarks").get(book.id);
+        await this.pouch("bookmarks").put({
           _id: book.id,
+          _rev: getbook._rev,
           book
-        })
-        .then()
-        .catch(function(err) {
-          console.log(err);
         });
+
+        this.$store.commit("toggleLoader");
+        this.message = "Book Saved";
+        this.$store.commit("toggleSnackBar");
+      } catch (err) {
+        console.log(err);
+      }
     }
   }
 };

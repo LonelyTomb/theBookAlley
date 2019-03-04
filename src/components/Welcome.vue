@@ -17,7 +17,7 @@
         </v-form>
       </v-flex>
     </v-layout>
-    <Loader/>
+    <Loader :message="message"/>
     <v-container v-if="this.books.length > 0" fluid grid-list-xl>
       <v-slide-y-transition>
         <v-layout row wrap>
@@ -48,9 +48,6 @@ import Spinner from "./Spinner";
 
 export default {
   name: "Welcome",
-  pouch: {
-    bookmarks: {}
-  },
   components: {
     Loader: () => import("./Loader.vue"),
     SnackBar: () => import("./Snackbar.vue"),
@@ -65,31 +62,34 @@ export default {
     books: [],
     toggleSB: true
   }),
-
-  mounted() {
-    this.pouch()
-      .info()
-      .then(function(info) {
-        console.log(info);
-      });
-  },
+  mounted() {},
   methods: {
     async findBook(bookName) {
-      this.$pouch("search").post({
-        name: bookName
-      });
-
+      // If Search Query is Empty, notify and quit
       if (bookName == null || bookName.length == 0) {
         this.message = "Enter Book";
-        this.$store.commit("toggleSnackBar");
+        this.$store.commit("toggleSnackBar"); //Toggle Loading Prompt
         return;
       }
+
+      // Save Searches Into DB
+      try {
+        const search = await this.pouch("search").post({
+          name: bookName
+        });
+      } catch (e) {
+        console.log(e);
+      }
+      this.message = "Searching for Books";
+
       this.$store.commit({
         type: "toggleBooksState",
         condition: "loading"
       });
-      this.$store.commit("toggleLoader");
 
+      this.$store.commit("toggleLoader"); //Toggle Loading Prompt
+
+      //Find Book Using Google Books Api
       try {
         const bookData = await axios.get(
           "https://www.googleapis.com/books/v1/volumes",
@@ -104,9 +104,9 @@ export default {
 
         if (bookData.data.totalItems == 0) {
           this.books = [];
+          this.$store.commit("toggleLoader");
           this.message = "No Books Found";
           this.$store.commit("toggleSnackBar");
-          this.$store.commit("toggleLoader");
           return;
         }
         const {
