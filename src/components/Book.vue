@@ -50,12 +50,12 @@
                 <v-icon>open_in_new</v-icon>
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn small @click="saveBook(book)" flat v-if="findBook == false">
+              <v-btn small @click="saveBook(book)" flat>
                 <v-icon>save</v-icon>
               </v-btn>
-              <v-btn small @click="remove(book)" flat v-else>
+              <!-- <v-btn small @click="remove(book)" flat v-else>
                 <v-icon>delete</v-icon>
-              </v-btn>
+              </v-btn>-->
             </v-card-actions>
           </v-flex>
         </v-layout>
@@ -114,7 +114,7 @@ export default {
       try {
         const getBook = await this.pouch("bookmarks").get(book.id);
         if (getBook !== null) {
-          await this.pouch("bookmarks").remove(getBook);
+          await this.pouch("bookmarks").remove(getBook._id, getBook._rev);
         }
       } catch (e) {
         console.log(e);

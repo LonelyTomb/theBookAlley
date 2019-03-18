@@ -45,6 +45,7 @@
 <script>
 import { api } from "../apiKey";
 import Spinner from "./Spinner";
+import { setTimeout } from "timers";
 
 export default {
   name: "Welcome",
@@ -67,8 +68,10 @@ export default {
     async findBook(bookName) {
       // If Search Query is Empty, notify and quit
       if (bookName == null || bookName.length == 0) {
-        this.message = "Enter Book";
-        this.$store.commit("toggleSnackBar"); //Toggle Loading Prompt
+        //Toggle Loading Prompt
+        this.$store.dispatch("displaySnackBar", {
+          message: "Enter Book"
+        });
         return;
       }
 
@@ -80,14 +83,16 @@ export default {
       } catch (e) {
         console.log(e);
       }
-      this.message = "Searching for Books";
 
-      this.$store.commit({
-        type: "toggleBooksState",
-        condition: "loading"
-      });
+      // this.$store.commit({
+      //   type: "toggleBooksState",
+      //   condition: "loading"
+      // });
 
-      this.$store.commit("toggleLoader"); //Toggle Loading Prompt
+      this.$store.dispatch({
+        type: "displayLoader",
+        message: "Searching for Books"
+      }); //Toggle Loading Prompt
 
       //Find Book Using Google Books Api
       try {
@@ -104,29 +109,30 @@ export default {
 
         if (bookData.data.totalItems == 0) {
           this.books = [];
-          this.$store.commit("toggleLoader");
-          this.message = "No Books Found";
-          this.$store.commit("toggleSnackBar");
+          this.$store.dispatch({
+            type: "displaySnackBar",
+            message: "No Books Found"
+          });
           return;
         }
+
         const {
           data: { items },
           status
         } = bookData;
 
-        this.$store.commit({
-          type: "toggleBooksState",
-          condition: "loading"
-        });
-
-        this.$store.commit("toggleLoader");
+        // this.$store.dispatch({
+        //   type: "toggleBooksState",
+        //   condition: "loading"
+        // });
 
         this.books = items;
         // console.log(items, status);
       } catch (e) {
-        this.$store.commit("toggleLoader");
-        this.message = "Unable to Complete, Try Again";
-        this.$store.commit("toggleSnackBar");
+        this.$store.dispatch({
+          type: "displaySnackBar",
+          message: "Unable to Complete, Try Again"
+        });
       }
     }
   }

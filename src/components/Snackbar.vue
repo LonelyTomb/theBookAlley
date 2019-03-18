@@ -1,12 +1,12 @@
 <template>
   <v-snackbar
-    v-model="$store.state.snackBar"
+    v-model="$store.getters.snackBarState"
     :multi-line="multiLine"
     :timeout="timeout"
     :top="true"
   >
-    {{ text }}
-    <v-btn color="pink" flat @click="$store.commit('toggleSnackBar')">Close</v-btn>
+    {{ $store.getters.snackMessage.message }}
+    <v-btn color="pink" flat @click="$store.dispatch('closeSnackBar')">Close</v-btn>
   </v-snackbar>
 </template>
 
